@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
     type: [mongoose.Schema.Types.ObjectId],
     ref: "Movie",
     default: [],
-  }, 
+  }
 });
 
 // hashing password before saving to database
