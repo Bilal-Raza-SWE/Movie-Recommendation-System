@@ -1,32 +1,37 @@
 const mongoose = require("mongoose");
+const AutoIncrement = require("mongoose-sequence")(mongoose);
 const bcrypt = require("bcrypt");
 
 //creating user schema
-const UserSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
+const UserSchema = new mongoose.Schema(
+  {
+    userId: { type: Number, unique: true }, // Auto-incrementing user-defined ID
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    preferences: {
+      type: [String],
+      default: [],
+    },
+    wishlist: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Movie",
+      default: [],
+    },
+    role: { type: String, enum: ["user", "admin"], default: "user" }, // Role field
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  preferences: {
-    type: [String],
-    default: [],
-  },
-  wishlist: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "Movie",
-    default: [],
-  }, 
-  role: { type: String, enum: ['user', 'admin'], default: 'user' } // Role field
-});
+  { timestamps: true }
+);
 
 // hashing password before saving to database
 UserSchema.pre("save", function (next) {
@@ -48,6 +53,10 @@ UserSchema.pre("save", function (next) {
       next();
     });
   });
+});
+
+UserSchema.plugin(AutoIncrement, {
+  inc_field: "userId"
 });
 
 module.exports = mongoose.model("User", UserSchema);

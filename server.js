@@ -5,9 +5,12 @@ const bodyParser = require("body-parser");
 const authRoutes = require('./src/routes/authRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const movieRoutes = require('./src/routes/movieRoutes');
-
+const reviewRoutes = require('./src/routes/reviewRoutes');
+const listRoutes = require('./src/routes/listRoutes');
+const recommendationRoutes = require('./src/routes/recommendationRoutes');
 const connectDB = require('./src/config/database'); // Ensure this path is correct
-const routes = require('./src/routes');
+const { searchAndFilterMovies } = require('./src/controllers/searchandfilterController');
+// const routes = require('./src/routes');
 
 dotenv.config();
 
@@ -31,9 +34,14 @@ app.use((err, req, res, next) => {
 // Connect to MongoDB
 connectDB();
 
+// ApI calls
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/movies', movieRoutes);
+app.use('/api/reviews', reviewRoutes)
+app.use("/api/lists", listRoutes);
+app.use("/api/movies/search", searchAndFilterMovies);
+app.use("/api/recommendations", recommendationRoutes);
 
 // Routes
 app.get('/', (req, res) => {
