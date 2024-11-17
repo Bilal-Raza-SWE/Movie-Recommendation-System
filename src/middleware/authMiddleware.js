@@ -9,7 +9,7 @@ const authMiddleware = (req, res, next) => {
 
   // Extract the token after "Bearer "
   const token = authHeader.split(' ')[1];
-//   console.log(token);
+  // console.log(token);
   if (!token) {
       return res.status(401).json({ message: 'Access Denied. Token missing' });
   }

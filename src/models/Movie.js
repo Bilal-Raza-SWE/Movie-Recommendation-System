@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
+const AutoIncrement = require("mongoose-sequence")(mongoose);
 
 const MovieSchema = new mongoose.Schema(
   {
+    id: { type: Number, unique: true }, // Auto-incremented field
     title: { type: String, required: true },
     genre: { type: [String], required: true }, // Example: ["Action", "Thriller"]
     director: { type: String, required: true },
@@ -20,5 +22,8 @@ const MovieSchema = new mongoose.Schema(
     timestamps: true, // Adds createdAt and updatedAt timestamps
   }
 );
+
+// Add auto-increment plugin to the schema
+MovieSchema.plugin(AutoIncrement, { inc_field: "id" });
 
 module.exports = mongoose.model("Movie", MovieSchema);

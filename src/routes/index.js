@@ -1,16 +1,14 @@
-const express = require('express');
-const router = express.Router();
-const authRoutes = require('./authRoutes');
-const userRoutes = require('./userRoutes');
-const movieRoutes = require('./movieRoutes');
+// const express = require('express');
+// const router = express.Router();
 
-// Routes
-router.use('/auth', authRoutes);
 
-// User routes should only be accessed by authenticated users
-router.use('/user', userRoutes);
+// // Routes
+// router.use('/auth', authRoutes);
 
-// Movie routes should only be accessed by Admin
-router.use('/movies', movieRoutes);
+// // User routes should only be accessed by authenticated users
+// router.use('/user', userRoutes);
 
-module.exports = router;
+// // Movie routes should only be accessed by Admin
+// router.use('/', movieRoutes);
+
+// module.exports = router;

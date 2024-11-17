@@ -24,7 +24,8 @@ const UserSchema = new mongoose.Schema({
     type: [mongoose.Schema.Types.ObjectId],
     ref: "Movie",
     default: [],
-  }
+  }, 
+  role: { type: String, enum: ['user', 'admin'], default: 'user' } // Role field
 });
 
 // hashing password before saving to database

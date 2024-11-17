@@ -5,58 +5,55 @@ const User = require('../models/User');
 // Register a new user
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+      const { name, email, password, role } = req.body;
 
-     // Ensure all fields are present
-     if (!name || !email || !password) {
-      return res.status(400).json({ message: 'All fields are required.' });
-  }
+      // Ensure role is valid ('user' or 'admin')
+      if (role && !['user', 'admin'].includes(role)) {
+          return res.status(400).json({ message: 'Invalid role.' });
+      }
 
-    // Check if the user already exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
+      // Check if the email is already in use
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+          return res.status(400).json({ message: 'Email already in use.' });
+      }
 
-    // Create a new user
-    const newUser = new User({ name, email, password });
-    await newUser.save();
+      // Create and save the user
+      const user = new User({ name, email, password, role });
+      await user.save();
 
-    res.status(201).json({ message: 'User registered successfully' });
-  }
-
-  catch (error) {
-    console.error(`Error registering user: ${error.message}`);
-    res.status(500).json({ message: 'Internal Server Error' });
+      res.status(201).json({ message: 'User registered successfully!', user });
+  } catch (error) {
+      console.error("Error in registerUser:", error); // Log the error
+      res.status(500).json({ error: 'Internal server error' });
   }
 };
 
+
 // Login a user
 const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid user.' });
+        }
 
-    // Check if the user exists
-    const user = await User.findOne({ email: email });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid email or password.' });
+        }
 
-    // Verify the password
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
+        const token = jwt.sign(
+            { userId: user._id, role: user.role }, // Include role in token
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
 
-    // Create a JWT token
-    const token =jwt.sign({userId: user._id}, process.env.JWT_SECRET, {expiresIn: '1hr'});
-    res.send({"message": "User logged in successfully", token});
-  }
-  
-    catch (error) {
-      console.error(`Error logging in user: ${error.message}`);
-      res.status(500).json({ message: 'Internal Server Error' });
+        res.status(200).json({message: 'token: ', token });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
     }
-  };
+};
 
 module.exports = { registerUser, loginUser };
