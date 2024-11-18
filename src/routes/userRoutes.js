@@ -4,9 +4,9 @@ const authMiddleware = require('../middleware/authMiddleware');
 const { getUserProfile, updateUserProfile } = require('../controllers/userController');
 
 // Get user profile
-router.get('/user/profile', authMiddleware, getUserProfile);
+router.get('/getProfile', authMiddleware, getUserProfile);
 
 // Update user profile
-router.put('/user/profile', authMiddleware, updateUserProfile);
+router.put('/updateProfile', authMiddleware, updateUserProfile);
 
 module.exports = router;

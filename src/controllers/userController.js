@@ -17,18 +17,22 @@ const getUserProfile = async (req, res) => {
 //update user data
 const updateUserProfile = async (req, res) => {
   try {
+    // console.log('Request body:', req.body);
     const { name, preferences } = req.body;
 
+    console.log('Updating user profile for user ID:', req.user.userId);
     const user = await User.findByIdAndUpdate(
       req.user.userId,
-      {name, preferences},
-      {new: true}
+      { name, preferences },
+      { new: true }
     ).select('-password');
 
+    // console.log('Updated user profile:', user);
     res.status(200).json(user);
     
   } catch (error) {
-    res.status(500).json(500).json({ error: 'Internal Server Error' });
+    console.error(`Error updating user profile: ${error.message}`);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 

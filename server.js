@@ -8,9 +8,9 @@ const movieRoutes = require('./src/routes/movieRoutes');
 const reviewRoutes = require('./src/routes/reviewRoutes');
 const listRoutes = require('./src/routes/listRoutes');
 const recommendationRoutes = require('./src/routes/recommendationRoutes');
-const connectDB = require('./src/config/database'); // Ensure this path is correct
+const connectDB = require('./src/config/database');
+const upcomingRoutes = require('./src/routes/upcomingRoutes');
 const { searchAndFilterMovies } = require('./src/controllers/searchandfilterController');
-// const routes = require('./src/routes');
 
 dotenv.config();
 
@@ -31,6 +31,7 @@ app.use((err, req, res, next) => {
   }
   next();
 });
+
 // Connect to MongoDB
 connectDB();
 
@@ -42,6 +43,7 @@ app.use('/api/reviews', reviewRoutes)
 app.use("/api/lists", listRoutes);
 app.use("/api/movies/search", searchAndFilterMovies);
 app.use("/api/recommendations", recommendationRoutes);
+app.use('/api/upcoming', upcomingRoutes);
 
 // Routes
 app.get('/', (req, res) => {
